@@ -7,11 +7,18 @@ function computerPlay() {
     return words[Math.floor(Math.random() * words.length)];
 }
 
-function playRound(playerSelection, computerSelection) {
+function playerPlay() {
+    prompt(`Round ${i + 1}: Choose Rock, Paper, or Scissors?`);
     let player = playerSelection.toLowerCase();
     player = player.trim();
+}
+
+function playRound(playerSelection, computerSelection) {
     let computer = computerSelection;
+    let player = playerSelection;
+    
     console.log("player:" + player + " and computer: " + computer);
+    
     if (player === "rock") {
         if (computer === "rock") {
             return ["Draw", 2];
@@ -53,10 +60,12 @@ function playRound(playerSelection, computerSelection) {
 function game() {
     let computerScore = 0;
     let playerScore = 0;
+
     console.log("You have 5 rounds" + "\n" + "========================================================");
+
     for (let i = 0; i < 5; i++) {
         computerSelection = computerPlay();
-        playerSelection = prompt(`Round ${i + 1}: Choose Rock, Paper, or Scissors?`);
+        playerSelection = playerPlay();
         if (playerSelection !== null) {
             result = playRound(playerSelection, computerSelection);
         }
@@ -66,7 +75,8 @@ function game() {
         }
         if (result == -1) {
             i--;
-            console.log("Try again with the correct input! You didnt lost your round... Choose one of these Rock, Paper, or Scissors" + "\n" + "========================================================");
+            console.log("Try again with the correct input! You didnt lost your round... Choose one of these Rock, Paper, or Scissors" + "\n" 
+            + "========================================================");
         }
         else {
             console.log(result[0]);
