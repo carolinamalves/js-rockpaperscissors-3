@@ -7,23 +7,34 @@ function computerPlay() {
     return words[Math.floor(Math.random() * words.length)];
 }
 
-function playerPlay() {
-    prompt(`Round ${i + 1}: Choose Rock, Paper, or Scissors?`);
-    let player = playerSelection.toLowerCase();
-    player = player.trim();
+function playerPlay(i) {
+    let isOkay = false;
+    let validValues = ["rock", "paper", "scissors", null];
+    let player;
+    while (isOkay == false) {
+        player = prompt(`Round ${i + 1}: Choose Rock, Paper, or Scissors?`);
+        if (player == null) {
+            if (confirm('Want to give up?') == false) {
+                continue;
+            }
+            return null;
+        }
+        player = player.toLowerCase().replaceAll(/\s/g, '');
+        isOkay = validValues.indexOf(player) >= 0;
+        if (isOkay == false) {
+            console.log("Try again with the correct input! You didnt lost your round... Choose one of these Rock, Paper, or Scissors" + "\n"
+                + "========================================================");
+        }
+    }
+    return player;
 }
 
-function playRound(playerSelection, computerSelection) {
-    let computer = computerSelection;
-    let player = playerSelection;
-    
-    console.log("player:" + player + " and computer: " + computer);
-    
+function playRound(player, computer) {
+    if (player == computer) {
+        return ["Draw!", 2];
+    }
     if (player === "rock") {
-        if (computer === "rock") {
-            return ["Draw", 2];
-        }
-        else if (computer === "paper") {
+        if (computer === "paper") {
             return ["You Lose! Paper beats Rock", 0];
         }
         else if (computer === "scissors") {
@@ -33,9 +44,6 @@ function playRound(playerSelection, computerSelection) {
     if (player === "paper") {
         if (computer === "rock") {
             return ["You Win! Paper beats Rock", 1];
-        }
-        else if (computer === "paper") {
-            return ["Draw", 2];
         }
         else if (computer === "scissors") {
             return ["You lose! Scissors beats Paper", 0];
@@ -48,13 +56,8 @@ function playRound(playerSelection, computerSelection) {
         else if (computer === "paper") {
             return ["You Win! Scissors beats Paper", 1];
         }
-        else if (computer === "scissors") {
-            return ["Draw", 2];
-        }
     }
-    else {
-        return -1;
-    }
+    console.log("player:" + player + " and computer: " + computer);
 }
 
 function game() {
@@ -62,42 +65,35 @@ function game() {
     let playerScore = 0;
 
     console.log("You have 5 rounds" + "\n" + "========================================================");
-
     for (let i = 0; i < 5; i++) {
         computerSelection = computerPlay();
-        playerSelection = playerPlay();
-        if (playerSelection !== null) {
-            result = playRound(playerSelection, computerSelection);
-        }
-        else {
+        playerSelection = playerPlay(i);
+        if (playerSelection == null) {
             console.log("You quit the game");
             break;
         }
-        if (result == -1) {
-            i--;
-            console.log("Try again with the correct input! You didnt lost your round... Choose one of these Rock, Paper, or Scissors" + "\n" 
-            + "========================================================");
-        }
         else {
-            console.log(result[0]);
-            if (result[1] == 0) {
-                computerScore += 1;
-                console.log(`Computer earned 1 point from round ${i + 1}`);
-            }
-            if (result[1] == 1) {
-                playerScore += 1;
-                console.log(`You earned 1 point from round ${i + 1}`);
-            }
-            if (result[1] == 2) {
-                console.log(`You draw from round ${i + 1}`);
-            }
+            result = playRound(playerSelection, computerSelection);
         }
-        if(playerScore == 3 || computerScore == 3){
+        playRound(playerSelection, computerSelection);
+        console.log(result[0]);
+        if (result[1] == 0) {
+            computerScore += 1;
+            console.log(`Computer earned 1 point from round ${i + 1}`);
+        }
+        if (result[1] == 1) {
+            playerScore += 1;
+            console.log(`You earned 1 point from round ${i + 1}`);
+        }
+        if (result[1] == 2) {
+            console.log(`You draw from round ${i + 1}`);
+        }
+        if (playerScore == 3 || computerScore == 3) {
             break;
         }
     }
 
-    if(result != null){
+    if (result != null) {
         console.log(`${result[0]} \nYour final score is: ${playerScore} /5 \n========================================================`);
         if (playerScore == computerScore) {
             console.log("Finished!" + "\n" + "It's a tie!");
